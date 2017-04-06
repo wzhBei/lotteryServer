@@ -1,9 +1,0 @@
-127.0.0.1 - - [06/Apr/2017:21:54:00 +0800] "GET / HTTP/1.1" 404 951
-127.0.0.1 - - [06/Apr/2017:21:54:09 +0800] "GET /SpringRestHibernateExample/getAllCountries HTTP/1.1" 500 15942
-127.0.0.1 - - [06/Apr/2017:21:54:09 +0800] "GET /favicon.ico HTTP/1.1" 404 973
-127.0.0.1 - - [06/Apr/2017:21:55:09 +0800] "GET /SpringRestHibernateExample/getAllCountries HTTP/1.1" 500 15942
-127.0.0.1 - - [06/Apr/2017:21:55:26 +0800] "GET / HTTP/1.1" 404 951
-127.0.0.1 - - [06/Apr/2017:21:55:47 +0800] "GET / HTTP/1.1" 404 951
-127.0.0.1 - - [06/Apr/2017:21:55:51 +0800] "GET /SpringRestHibernateExample/getAllCountries HTTP/1.1" 200 12
-127.0.0.1 - - [06/Apr/2017:21:59:27 +0800] "GET /SpringRestHibernateExample/getAllCountries HTTP/1.1" 200 58
-127.0.0.1 - - [06/Apr/2017:21:59:31 +0800] "GET /SpringRestHibernateExample/getAllCountries HTTP/1.1" 200 58

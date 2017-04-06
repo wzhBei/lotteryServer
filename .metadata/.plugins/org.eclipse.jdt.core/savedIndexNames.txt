@@ -1,2 +1,0 @@
-INDEX VERSION 1.130+E:\server\workspace\lotteryServer\.metadata\.plugins\org.eclipse.jdt.core
-2144517049.index
