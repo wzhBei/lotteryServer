@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.arpit.java2blog.dao.LotteryDAO"/>
+<fullyQualifiedTypeName name="org.arpit.java2blog.service.LotteryService"/>
+<fullyQualifiedTypeName name="org.arpit.java2blog.model.LotteryModel"/>
+</qualifiedTypeNameHistroy>
