@@ -40,6 +40,7 @@ public class LotteryController {
         long start = new Date().getTime();
         GenCom(buff.toString(), ",", 6, result);
         long end = new Date().getTime() - start;
+        ArrayList<LotteryModel> models = new ArrayList<LotteryModel>();
         for (int i=0; i<result.size(); ++i)
         {
         	String originString = result.get(i);
@@ -52,9 +53,11 @@ public class LotteryController {
         			Integer.valueOf(nbrAry[4]).intValue(), 
         			Integer.valueOf(nbrAry[5]).intValue(),
         			0);
-        	lotteryService.addLottery(newModel);
+        	models.add(newModel);
             System.out.println((i+1) + ": " + result.get(i));
         }
+    	lotteryService.addLotterys(models);
+
         System.out.printf("-------End--------Total Seconds Is : %d-------", end);
 	}
 	
