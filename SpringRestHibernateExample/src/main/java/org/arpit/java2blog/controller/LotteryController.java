@@ -56,7 +56,8 @@ public class LotteryController {
         	models.add(newModel);
             System.out.println((i+1) + ": " + result.get(i));
         }
-    	lotteryService.addLotterys(models);
+        // TODO:
+    	lotteryService.addSumLotterys(models, 1, 10);
 
         System.out.printf("-------End--------Total Seconds Is : %d-------", end);
 	}
@@ -65,25 +66,25 @@ public class LotteryController {
 	    {
 	        String[] str_list = srcStr.split(sep);
 	         
-	        //Ñ¡ºÅÎ»
+	        //Ñ¡ï¿½ï¿½Î»
 	        int[] pos = new int[n];
 	         
-	        //Ñ¡²»³öÀ´
+	        //Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	        if (str_list.length < n || str_list.length <=0 || n <= 0)
 	        {
 	            return;
 	        }
 	         
-	        //³õÊ¼»¯Ç°nÊÇÑ¡ºÅÎ»
+	        //ï¿½ï¿½Ê¼ï¿½ï¿½Ç°nï¿½ï¿½Ñ¡ï¿½ï¿½Î»
 	        for(int i=0; i<n; i++)
 	        {
 	            pos[i]=i;
 	        }
 	         
-	        //Ñ­»·´¦Àí
+	        //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	        while(true)
 	        {
-	            //1.Éú³ÉÑ¡ÔñÊý¾Ý
+	            //1.ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	            StringBuffer buff = new StringBuffer();
 	            for(int i=0; i<n; i++)
 	            {
@@ -97,18 +98,18 @@ public class LotteryController {
 	             
 	            result.add(buff.toString());
 	             
-	            //2.½øÎ»
-	            //´ÓÑ¡ºÅÎ»×îÓÒ±ß¿ªÊ¼£¬Ñ¡ÔñµÚÒ»¸ö¿ÉÒÔÓÒÒÆµÄÎ»ÖÃ½øÐÐ½øÎ»
+	            //2.ï¿½ï¿½Î»
+	            //ï¿½ï¿½Ñ¡ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ò±ß¿ï¿½Ê¼ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Î»ï¿½Ã½ï¿½ï¿½Ð½ï¿½Î»
 	             
 	            boolean is_move = false;
 	 
 	            for (int i=n-1; i>=0; i--)
 	            {
-	                if (pos[i] < str_list.length-n+i)    //¿ÉÒÔ½øÎ»
+	                if (pos[i] < str_list.length-n+i)    //ï¿½ï¿½ï¿½Ô½ï¿½Î»
 	                {
-	                    pos[i]++;   //Ñ¡Î»ÓÒÒÆ
+	                    pos[i]++;   //Ñ¡Î»ï¿½ï¿½ï¿½ï¿½
 	                     
-	                    //ËùÓÐÓÒ±ßµÄÑ¡ºÅÈ«²¿¹éÎ»
+	                    //ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ßµï¿½Ñ¡ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½Î»
 	                    for (int k=i+1; k<n; ++k)
 	                    {
 	                        pos[k] = pos[i] + k - i;
@@ -119,7 +120,7 @@ public class LotteryController {
 	                }
 	            }
 	             
-	            if (!is_move)   //Ã»ÓÐ³É¹¦ÒÆÎ»,µ½Í·ÁË
+	            if (!is_move)   //Ã»ï¿½Ð³É¹ï¿½ï¿½ï¿½Î»,ï¿½ï¿½Í·ï¿½ï¿½
 	            {
 	                break;
 	            }
@@ -128,7 +129,7 @@ public class LotteryController {
 	 
 	public void printNow() {
 		Date now = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// ¿ÉÒÔ·½±ãµØÐÞ¸ÄÈÕÆÚ¸ñÊ½
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½Ê½
 		String hehe = dateFormat.format(now);
 		System.out.println(hehe);
 	}

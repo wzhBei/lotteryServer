@@ -1,5 +1,6 @@
 package org.arpit.java2blog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.arpit.java2blog.dao.CountryDAO;
@@ -26,8 +27,15 @@ public class LotteryService {
 	}
 	
 	@Transactional
-	public void addLotterys(List<LotteryModel> lotteryModels) {
-		lotteryDao.addLotterys(lotteryModels);
+	public void addSumLotterys(List<LotteryModel> allModels, int mixSum, int maxSum) {
+		ArrayList<SumLotteryModel> valuableModels = new ArrayList<SumLotteryModel>(); 
+		for(LotteryModel model : allModels) {
+			if (model.getTotal() < mixSum || model.getTotal() > maxSum) {
+				continue;
+			}
+			SumLotteryModel sumModel = (SumLotteryModel)model;
+			valuableModels.add(sumModel);
+		}
+		lotteryDao.addSumLotterys(valuableModels);
 	}
-	
 }

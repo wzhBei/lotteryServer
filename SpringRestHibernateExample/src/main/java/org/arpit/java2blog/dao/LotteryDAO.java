@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.arpit.java2blog.model.Country;
 import org.arpit.java2blog.model.LotteryModel;
+import org.arpit.java2blog.model.SumLotteryModel;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -34,11 +35,11 @@ public class LotteryDAO {
 		return lotteryModel;
 	}
 	
-	public void addLotterys(final List<LotteryModel> LotteryModels) {  
+	public void addSumLotterys(final List<SumLotteryModel> sumLotteryModels) {  
        Session session = this.sessionFactory.openSession();
        Transaction tx = session.beginTransaction();
        int index = 0;
-       for(LotteryModel model : LotteryModels) {
+       for(SumLotteryModel model : sumLotteryModels) {
     	   session.save(model);
     	   if (index % 100 == 0) {
     		   session.flush();
@@ -48,6 +49,7 @@ public class LotteryDAO {
        }
   	 tx.commit();
 	 session.close();
-       
     }  
+	
+	
 }

@@ -7,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="LotteryNumberTable")
 public class LotteryModel {
 	
 	public LotteryModel() {
@@ -26,8 +24,20 @@ public class LotteryModel {
 		this.five = five;
 		this.six = six;
 		this.seven = seven;
+		this.total = this.getOne() +
+				this.getTwo() +
+				this.getThree() +
+				this.getFour() +
+				this.getFive() +
+				this.getSix() +
+				this.getSeven();
 	}
-
+	
+	int total;
+	
+	public int getTotal() {
+		return total;
+	}
 
 	@Id
 	@Column(name="id")
