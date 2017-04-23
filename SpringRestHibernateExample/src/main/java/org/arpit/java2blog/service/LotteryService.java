@@ -3,7 +3,6 @@ package org.arpit.java2blog.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.arpit.java2blog.dao.CountryDAO;
 import org.arpit.java2blog.dao.LotteryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,20 +21,13 @@ public class LotteryService {
 	}
 
 	@Transactional
-	public void addLottery(LotteryModel lotteryModel) {
-		lotteryDao.addLottery(lotteryModel);
+	public void addLottery(InitlotterySixDataModel InitlotterySixDataModel) {
+		lotteryDao.addLottery(InitlotterySixDataModel);
 	}
 	
 	@Transactional
-	public void addSumLotterys(List<LotteryModel> allModels, int mixSum, int maxSum) {
-		ArrayList<SumLotteryModel> valuableModels = new ArrayList<SumLotteryModel>(); 
-		for(LotteryModel model : allModels) {
-			if (model.getTotal() < mixSum || model.getTotal() > maxSum) {
-				continue;
-			}
-			SumLotteryModel sumModel = (SumLotteryModel)model;
-			valuableModels.add(sumModel);
-		}
-		lotteryDao.addSumLotterys(valuableModels);
+	public void addInitLotterys(List<InitlotterySixDataModel> allModels) {
+		
+		lotteryDao.addInitLotterys(allModels);
 	}
 }

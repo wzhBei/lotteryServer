@@ -3,14 +3,11 @@ package org.arpit.java2blog.dao;
 import java.util.List;
 
 import org.arpit.java2blog.model.Country;
-import org.arpit.java2blog.model.LotteryModel;
-import org.arpit.java2blog.model.SumLotteryModel;
-import org.hibernate.HibernateException;
+import org.arpit.java2blog.model.InitlotterySixDataModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -25,21 +22,15 @@ public class LotteryDAO {
 	
 	public List<Country> getAllNumbers() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Country> countryList = session.createQuery("from LotteryModel").list();
+		List<Country> countryList = session.createQuery("from InitlotterySixDataModel").list();
 		return countryList;
 	}
 	
-	public LotteryModel addLottery(LotteryModel lotteryModel) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(lotteryModel);
-		return lotteryModel;
-	}
-	
-	public void addSumLotterys(final List<SumLotteryModel> sumLotteryModels) {  
+	public void addInitLotterys(final List<InitlotterySixDataModel> data) {  
        Session session = this.sessionFactory.openSession();
        Transaction tx = session.beginTransaction();
        int index = 0;
-       for(SumLotteryModel model : sumLotteryModels) {
+       for(InitlotterySixDataModel model : data) {
     	   session.save(model);
     	   if (index % 100 == 0) {
     		   session.flush();
@@ -49,7 +40,13 @@ public class LotteryDAO {
        }
   	 tx.commit();
 	 session.close();
-    }  
+    }
+
+	public InitlotterySixDataModel addLottery(InitlotterySixDataModel initlotterySixDataModel) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(initlotterySixDataModel);
+		return initlotterySixDataModel;
+	}  
 	
 	
 }
