@@ -28,5 +28,11 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/ezmorph-1.0.4.jar"/>
+	<classpathentry kind="lib" path="E:/server/安装包/json应用jar包/json-lib-2.2.2-jdk15.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

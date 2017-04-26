@@ -20,9 +20,11 @@ public class LotteryDAO {
 		this.sessionFactory = sf;
 	}
 	
-	public List<Country> getAllNumbers() {
+	public List<InitlotterySixDataModel> getLotteryWithConditionString(String conditionString) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Country> countryList = session.createQuery("from InitlotterySixDataModel").list();
+		String queryBase = "from InitlotterySixDataModel Where ";
+		String fullQueryBaseString = queryBase + conditionString;
+		List<InitlotterySixDataModel> countryList = session.createQuery(fullQueryBaseString).list();
 		return countryList;
 	}
 	

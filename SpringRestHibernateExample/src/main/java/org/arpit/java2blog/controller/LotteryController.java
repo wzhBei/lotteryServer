@@ -9,6 +9,7 @@ import org.arpit.java2blog.model.Country;
 import org.arpit.java2blog.model.InitlotterySixDataModel;
 import org.arpit.java2blog.service.LotteryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -144,11 +145,11 @@ public class LotteryController {
 		System.out.println(hehe);
 	}
 
-	@RequestMapping(value = "/getAllLotterys", method = RequestMethod.GET, headers = "Accept=application/json")
-	public List<Country> getLotteryNumbers() {
+	@RequestMapping(value = "/getLotterys", method = RequestMethod.POST, headers = "Accept=application/json")
+	public List<InitlotterySixDataModel> getLotteryNumbers(@RequestBody String body) {
 
-		List<Country> listOfCountries = lotteryService.getAllLotterys();
-		return listOfCountries;
+		List<InitlotterySixDataModel> listOfLotterys = lotteryService.getAllLotterys(body);
+		return listOfLotterys;
 	}
 
 }
