@@ -1,12 +1,16 @@
 package org.arpit.java2blog.model;
 
+import java.util.Random;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.arpit.java2blog.controller.InitlotterySixData;
+
 @Entity
-@Table(name="lotterysixbase")
+@Table(name="lottery.lotterysixbase")
 public class InitlotterySixDataModel {
 
 	@Id
@@ -46,6 +50,38 @@ public class InitlotterySixDataModel {
 	@Column(name="CONVALUE")
 	protected int conValue;
 
+	public InitlotterySixDataModel() {
+		super();	
+	}
+	
+	public boolean isEqualToModel(InitlotterySixDataModel model) {
+		return this.n1 == model.n1 &&
+				this.n2 == model.n2 &&
+				this.n3 == model.n3 &&
+				this.n4 == model.n4 &&
+				this.n5 == model.n5 &&
+				this.n6 == model.n6;
+	}
+	
+	public static InitlotterySixDataModel generateRandomModel() {
+		InitlotterySixDataModel newModel = new InitlotterySixDataModel();
+		InitlotterySixData init = new InitlotterySixData();
+		Random random = new Random();
+		newModel.n1 = random.nextInt(35) + 1;
+		newModel.n2 = random.nextInt(35) + 1;
+		newModel.n3 = random.nextInt(35) + 1;
+		newModel.n4 = random.nextInt(35) + 1;
+		newModel.n5 = random.nextInt(35) + 1;
+		newModel.n6 = random.nextInt(35) + 1;
+		int[] intAry = {newModel.n1,newModel.n2,newModel.n3,newModel.n4,newModel.n5,newModel.n6};
+		newModel.sumValue = init.sumData(intAry);
+		newModel.crsValue = init.crsData(intAry);
+		newModel.oddValue = init.oddData(intAry); 
+		newModel.intValue = init.intData(intAry); 
+		newModel.conValue = init.conData(intAry);
+		return newModel;
+	}
+	
 	public InitlotterySixDataModel( String id, int[] arry, int sumValue, int crsValue, int oddValue, int intValue, int conValue) {
 		super();
 		this.id = id;

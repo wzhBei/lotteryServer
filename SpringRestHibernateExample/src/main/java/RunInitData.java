@@ -45,7 +45,7 @@ public class RunInitData {
             	modelList.add(model);
            }
     	   LotteryDAO service = new LotteryDAO();
-    	   service.addSumLotterys(modelList);
+    	   service.addInitLotterys(modelList);
        } 
        catch (Exception e) 
        {

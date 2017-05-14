@@ -22,7 +22,7 @@ public class LotteryController {
 
 	
 
-	@RequestMapping(value = "/generateLotterys", method = RequestMethod.GET, headers = "Accept=application/json")
+//	@RequestMapping(value = "/generateLotterys", method = RequestMethod.GET, headers = "Accept=application/json")
 	public void generateData() {
         System.out.print("");
 		this.printNow();
@@ -77,7 +77,7 @@ public class LotteryController {
 	    {
 	        String[] str_list = srcStr.split(sep);
 	         
-	        //选锟斤拷位
+	        //选锟斤拷佄1�7
 	        int[] pos = new int[n];
 	         
 	        //选锟斤拷锟斤拷锟斤拷
@@ -86,7 +86,7 @@ public class LotteryController {
 	            return;
 	        }
 	         
-	        //锟斤拷始锟斤拷前n锟斤拷选锟斤拷位
+	        //锟斤拷始锟斤拷前n锟斤拷�1�7�锟斤拷佄1�7
 	        for(int i=0; i<n; i++)
 	        {
 	            pos[i]=i;
@@ -110,7 +110,7 @@ public class LotteryController {
 	            result.add(buff.toString());
 	             
 	            //2.锟斤拷位
-	            //锟斤拷选锟斤拷位锟斤拷锟揭边匡拷始锟斤拷选锟斤拷锟揭伙拷锟斤拷锟斤拷锟斤拷锟斤拷频锟轿伙拷媒锟斤拷薪锟轿�
+	            //锟斤拷�1�7�锟斤拷位锟斤拷锟揭边匡拷始锟斤拷�1�7�锟斤拷锟揭伙拷锟斤拷锟斤拷锟斤拷锟斤拷频锟轿伙拷媒锟斤拷薪锟轿ￄ1�7
 	             
 	            boolean is_move = false;
 	 
@@ -120,7 +120,7 @@ public class LotteryController {
 	                {
 	                    pos[i]++;   //选位锟斤拷锟斤拷
 	                     
-	                    //锟斤拷锟斤拷锟揭边碉拷选锟斤拷全锟斤拷锟斤拷位
+	                    //锟斤拷锟斤拷锟揭边碉拷�1�7�锟斤拷全锟斤拷锟斤拷位
 	                    for (int k=i+1; k<n; ++k)
 	                    {
 	                        pos[k] = pos[i] + k - i;
@@ -131,7 +131,7 @@ public class LotteryController {
 	                }
 	            }
 	             
-	            if (!is_move)   //没锟叫成癸拷锟斤拷位,锟斤拷头锟斤拷
+	            if (!is_move)   //没锟叫成癸拷锟斤拷位,锟斤拷头锟斤拄1�7
 	            {
 	                break;
 	            }
