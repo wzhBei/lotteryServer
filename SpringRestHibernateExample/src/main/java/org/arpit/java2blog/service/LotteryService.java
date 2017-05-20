@@ -1,14 +1,20 @@
 package org.arpit.java2blog.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.functors.ForClosure;
+import org.arpit.java2blog.controller.InitlotterySixData;
 import org.arpit.java2blog.dao.LotteryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.arpit.java2blog.model.*;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;;
 
 @Service("lotteryService")
@@ -77,10 +83,112 @@ public class LotteryService {
 			queryString += tempStr;
 			queryCount += 1;
 			if (i == ary.length - 1) continue;
+		}
+		
+		JSONArray luckNumberJson = (JSONArray)map.get("luckyNumbers");
+		String luckCountMax = (String)map.get("luckMaxCount");
+		String luckCountMin = (String)map.get("luckMinCount");
+		if (luckNumberJson != null ) {
+			Object[] objs = luckNumberJson.toArray();
+			List<String> tempList = new ArrayList<String>();
+			for(Object s : objs)
+			{
+				String s1 = s.toString();
+				tempList.add(s1);
+			}
+			String luckCondition = generateQueryWithLucknumbers(tempList, luckCountMin, luckCountMax);
+			String coverdLuckCondition = "(" + luckCondition + ")";
+			if (luckCondition.length() > 0) {
+				if (queryString.length() > 0) {
+					queryString += " AND ";
+				}
+				queryString += coverdLuckCondition;
+			}
+		}
+		
+		return lotteryDao.getLotteryWithConditionString(queryString);
+	}
+	
+	// TODO: 优化
+	String generateQueryWithLucknumbers(List<String> numbers, String luckCountMin, String luckCountMax) {
+		int min = Integer.parseInt(luckCountMin);
+		int max = Integer.parseInt(luckCountMax);
+		String result = "";
+		int count = 0;
+		String integrateString = "";
+		for(int i = 0; i < numbers.size(); i++) {
+			if (i > 0) {
+				integrateString += ",";
+			}
+			String str = numbers.get(i);
+			integrateString += str;
+		}
+		
+		for(int i = min; i <= max; i++ ) {			
+			InitlotterySixData init = new InitlotterySixData();
+			try {
+				List<String> gemdNumbers = init.GenCom(integrateString, ",", i);
+				for(String str : gemdNumbers) {
+			        String[] strAry = str.split(",");
+			        List<String> strList = Arrays.asList(strAry);
+			        String queryForNumbers = generateQueryWithLucknumbers(strList);
+			        if (count > 0) {
+						result += " OR ";
+					}
+			        result += queryForNumbers;
+			        count++;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	String generateQueryWithLucknumbers(List<String> numbers) {
+		String numbersString = "(";
+		for (int i = 0 ; i < numbers.size(); i++) {
+			if (i > 0) {
+				numbersString += ",";
+			}
+			numbersString = numbersString + numbers.get(i);
+		}
+		
+		InitlotterySixData init = new InitlotterySixData();
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+			result = init.GenCom("1,2,3,4,5,6", ",", numbers.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		numbersString += ")";
+		
+		String queryString = "";
+		for (int i = 0; i < result.size(); i++) {
+			String temp = result.get(i);
+	        String[] str_list = temp.split(",");
+	        if (i > 0) {
+				queryString += " OR ";
+			}
+	        
+	        String rsInOneLoop = "(";
+	        for(int j = 0; j < str_list.length; j++) {
+	        	String s = str_list[j];
+	        	if (j > 0) {
+	        		rsInOneLoop += " AND ";
+				}
+	        	rsInOneLoop += "N" + s + " in " + numbersString;
+	        	
+	        }
+	        rsInOneLoop += ")";
+	        
+			queryString += rsInOneLoop;
 			
 		}
-		System.out.println("queryString is " + queryString);
-		return lotteryDao.getLotteryWithConditionString(queryString);
+		
+		return queryString;
 	}
 	
 	@Transactional

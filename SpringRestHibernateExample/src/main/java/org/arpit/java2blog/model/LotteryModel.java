@@ -15,11 +15,11 @@ public class LotteryModel {
 		super();
 	}
 	
-	static void generateRandomModel() {
-		Random random = new Random();
-		int randomNbr = random.nextInt(36) + 1;
-		this.one = random.nextInt(36);
-	}
+//	static void generateRandomModel() {
+//		Random random = new Random();
+//		int randomNbr = random.nextInt(36) + 1;
+//		this.one = random.nextInt(36);
+//	}
 	
 	public LotteryModel(String id, int one, int two, int three, int four, int five, int six, int seven) {
 		super();

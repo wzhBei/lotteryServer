@@ -34,6 +34,7 @@ public class LotteryDAO {
 			return this.generateRandomModels(5);
 		}
 		//+ " ORDER BY RAND() LIMIT 5"
+		System.out.println("queryString is " + fullQueryBaseString);	
 		Query query = session.createQuery(fullQueryBaseString);
 		query.setMaxResults(5);
 		List<InitlotterySixDataModel> countryList = query.list();
