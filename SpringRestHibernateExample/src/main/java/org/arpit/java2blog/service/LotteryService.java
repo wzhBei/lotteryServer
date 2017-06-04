@@ -2,6 +2,7 @@ package org.arpit.java2blog.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +97,21 @@ public class LotteryService {
 				String s1 = s.toString();
 				tempList.add(s1);
 			}
+			
+			 Comparator c = new Comparator<String>() {  
+					@Override
+					public int compare(String o1, String o2) {
+						int a = Integer.parseInt(o1);
+						int b = Integer.parseInt(o2);
+						if (a < b) {
+							return -1; 
+						} else {
+							return 1;
+						}
+					}  
+		        }; 
+		        
+			tempList.sort(c);
 			String luckCondition = generateQueryWithLucknumbers(tempList, luckCountMin, luckCountMax);
 			String coverdLuckCondition = "(" + luckCondition + ")";
 			if (luckCondition.length() > 0) {
@@ -146,6 +162,7 @@ public class LotteryService {
 		return result;
 	}
 	
+	/// 输入的数字
 	String generateQueryWithLucknumbers(List<String> numbers) {
 		String numbersString = "(";
 		for (int i = 0 ; i < numbers.size(); i++) {
@@ -179,7 +196,8 @@ public class LotteryService {
 	        	if (j > 0) {
 	        		rsInOneLoop += " AND ";
 				}
-	        	rsInOneLoop += "N" + s + " in " + numbersString;
+	        	String nbrValue = numbers.get(j);
+	        	rsInOneLoop += "N" + s + " = " + nbrValue;
 	        	
 	        }
 	        rsInOneLoop += ")";
