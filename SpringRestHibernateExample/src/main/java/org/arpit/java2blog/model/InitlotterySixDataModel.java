@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import org.arpit.java2blog.controller.InitlotterySixData;
 
 @Entity
-@Table(name="lottery.lotterysixbase")
+@Table(name="lotterysixbase")
 public class InitlotterySixDataModel {
 
 	@Id
