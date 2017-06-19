@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.arpit.java2blog.model.Country;
 import org.arpit.java2blog.model.InitlotterySixDataModel;
 import org.hibernate.Query;
 import org.hibernate.Session;

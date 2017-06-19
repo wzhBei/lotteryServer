@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.arpit.java2blog.model.Country;
 import org.arpit.java2blog.model.InitlotterySixDataModel;
 import org.arpit.java2blog.service.LotteryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class LotteryController {
 
 	
 
-//	@RequestMapping(value = "/generateLotterys", method = RequestMethod.GET, headers = "Accept=application/json")
+	@RequestMapping(value = "/generateLotterys", method = RequestMethod.GET, headers = "Accept=application/json")
 	public void generateData() {
         System.out.print("");
 		this.printNow();
@@ -44,7 +43,9 @@ public class LotteryController {
         try {
 			result = init.GenCom(buff.toString(), ",", 6);
 			System.out.println(result.size());
+			
 			for (int i = 0; i < result.size(); i++) {
+				
 				String originString = result.get(i);
 				String[] nbrAry = originString.split(",");
 				int[] intArry = new int[nbrAry.length];
@@ -61,14 +62,17 @@ public class LotteryController {
 						init.intData(intArry), 
 						init.conData(intArry));
 				modelList.add(model);
-//				System.out.println(model.getId());
+				if (i > 0 && (i % 1000 == 0 || result.size() - i <= 1000)) {
+			    	lotteryService.addInitLotterys(modelList);
+			    	modelList = new ArrayList<InitlotterySixDataModel>();
+				}
+				System.out.println(model.getId());
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
        
-    	lotteryService.addInitLotterys(modelList);
         long end = new Date().getTime() - start;
         System.out.printf("-------End--------Total Seconds Is : %d-------", end);
 	}
