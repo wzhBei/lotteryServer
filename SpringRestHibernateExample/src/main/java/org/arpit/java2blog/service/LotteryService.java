@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.collections.functors.ForClosure;
 import org.arpit.java2blog.controller.InitlotterySixData;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.arpit.java2blog.model.*;
+import org.hibernate.sql.Select;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;;
@@ -27,6 +29,8 @@ public class LotteryService {
 	@Transactional
 	public List<InitlotterySixDataModel> getAllLotterys(String body) {
 		Map map = (Map)JSONObject.fromObject(body);
+		
+		String[] exludedNbrs;
 		
 		String sumMinString = (String) map.get("sumMin");
 		String sumMaxString = (String) map.get("sumMax");
@@ -60,7 +64,6 @@ public class LotteryService {
 		
 		String n6Min = (String) map.get("MinN6");
 		String n6Max = (String) map.get("MaxN6");
-		
 		
 		String sumQueryString = "SUMVALUE >= " + sumMinString + " AND " + " SUMVALUE <= " + sumMaxString;
 		String crsQueryString = "CRSVALUE >= " + crsMinString + " AND " + " CRSVALUE <= " + crsMaxString;
@@ -122,8 +125,92 @@ public class LotteryService {
 			}
 		}
 		
+		JSONArray excludedNumberJson = (JSONArray)map.get("excludedNbrs");
+		if (excludedNumberJson != null) {
+			Object[] objs2 = excludedNumberJson.toArray();
+			String[] tempList2 = new String[objs2.length];
+			int index = 0;
+			for(Object s : objs2)
+			{
+				String s1 = s.toString().trim();
+				tempList2[index] = s1;
+				index ++;
+			}
+			
+			int excludedCount = (int) map.get("excludedCount");
+			String excludedCondition = generateQueryWithExcludedNumbers(tempList2, excludedCount);
+			System.out.println(excludedCondition);
+			
+			if (excludedCondition.length() > 0) {
+				if(queryString.length() > 0) {
+					queryString += " AND ";
+				}
+				queryString += excludedCondition;
+			}
+		}
+		
 		return lotteryDao.getLotteryWithConditionString(queryString);
 	}
+	
+	//
+	String generateQueryWithExcludedNumbers(String[] src, int nbrCount) {
+		String query = "";
+		
+		// 获得当前一组数字
+		for(int currentNbrIndex = 0; currentNbrIndex < src.length; currentNbrIndex++) {
+			String currentNbr = src[currentNbrIndex];
+			String[] currentNbrs = currentNbr.split(",");
+			if (currentNbrIndex > 0) {
+				query += " AND ";
+			}
+			query += generateQueryForNbrs(currentNbrs, nbrCount);
+		}
+		return "(" + query + ")";
+	}
+	
+	// nbr "1,5,11,15,19,30"
+	String generateQueryForNbrs(String[] nbrs, int nbrCount) {
+		String query = "";
+		try {
+			InitlotterySixData init = new InitlotterySixData();
+			List<String> gemdNumbers = init.GenCom("1,2,3,4,5,6", ",", nbrCount);			
+			// 循环所有索引
+			for(int j = 0; j < gemdNumbers.size(); j++) {
+				String indexString = gemdNumbers.get(j);
+				String indexNbrs[] =  indexString.split(",");
+			
+				// 一对索引所生成的query
+				String tempQuery = "";
+				for (int k = 0; k < indexNbrs.length; k++) {
+					if (k == 0) {
+						tempQuery += "(";
+					}
+					if (k > 0) {
+						tempQuery += " AND ";
+					}
+					String currentIndexNbr = indexNbrs[k];
+					int intIndex = Integer.parseInt(currentIndexNbr);
+					intIndex --;
+					String currentIndexValue = nbrs[intIndex];
+					tempQuery += "N"+currentIndexNbr+" <> " +currentIndexValue;
+					if (k == indexNbrs.length - 1) {
+						tempQuery += ")";
+					}
+				}
+				if (j > 0) {
+					query += " AND ";
+				}
+				query += tempQuery;
+			}
+			return "(" + query + ")";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+}
+	//
+	
 	
 	// TODO: 优化
 	String generateQueryWithLucknumbers(List<String> numbers, String luckCountMin, String luckCountMax) {
@@ -144,7 +231,12 @@ public class LotteryService {
 			InitlotterySixData init = new InitlotterySixData();
 			try {
 				List<String> gemdNumbers = init.GenCom(integrateString, ",", i);
-				for(String str : gemdNumbers) {
+				int random = this.generaterRandomNbr(gemdNumbers.size());
+				for(int j = 0; j < gemdNumbers.size(); j++) {
+					if (j != random) {
+						continue;
+					}
+					String str = gemdNumbers.get(j);
 			        String[] strAry = str.split(",");
 			        List<String> strList = Arrays.asList(strAry);
 			        String queryForNumbers = generateQueryWithLucknumbers(strList);
@@ -153,6 +245,7 @@ public class LotteryService {
 					}
 			        result += queryForNumbers;
 			        count++;
+			        break;
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -162,16 +255,8 @@ public class LotteryService {
 		return result;
 	}
 	
-	/// 输入的数字
+	/// 从输入的数字中随机取出一组，生成条件
 	String generateQueryWithLucknumbers(List<String> numbers) {
-		String numbersString = "(";
-		for (int i = 0 ; i < numbers.size(); i++) {
-			if (i > 0) {
-				numbersString += ",";
-			}
-			numbersString = numbersString + numbers.get(i);
-		}
-		
 		InitlotterySixData init = new InitlotterySixData();
 		ArrayList<String> result = new ArrayList<String>();
 		try {
@@ -180,13 +265,17 @@ public class LotteryService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		numbersString += ")";
 		
 		String queryString = "";
+		int random = this.generaterRandomNbr(result.size());
+		int count = 0;
 		for (int i = 0; i < result.size(); i++) {
+			if (i != random) {
+				continue;
+			}
 			String temp = result.get(i);
 	        String[] str_list = temp.split(",");
-	        if (i > 0) {
+	        if (count > 0) {
 				queryString += " OR ";
 			}
 	        
@@ -198,12 +287,12 @@ public class LotteryService {
 				}
 	        	String nbrValue = numbers.get(j);
 	        	rsInOneLoop += "N" + s + " = " + nbrValue;
-	        	
 	        }
 	        rsInOneLoop += ")";
 	        
 			queryString += rsInOneLoop;
-			
+			count ++;
+			break;
 		}
 		
 		return queryString;
@@ -219,4 +308,11 @@ public class LotteryService {
 		
 		lotteryDao.addInitLotterys(allModels);
 	}
+	
+	// 1 ~ max随机数
+	int generaterRandomNbr(int max) {
+		Random random = new Random();
+		return random.nextInt(max);		
+	}
+	
 }

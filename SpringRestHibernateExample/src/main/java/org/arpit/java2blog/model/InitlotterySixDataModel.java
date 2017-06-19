@@ -93,7 +93,7 @@ public class InitlotterySixDataModel {
 		this.n6 = arry[5];
 		this.sumValue = sumValue;
 		this.crsValue = crsValue;
-		this.oddValue = intValue;
+		this.oddValue = oddValue;
 		this.intValue = intValue;
 		this.conValue = conValue;
 	}
