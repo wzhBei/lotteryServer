@@ -143,9 +143,9 @@ public class LotteryService {
 			
 			if (excludedCondition.length() > 0) {
 				if(queryString.length() > 0) {
-					queryString += " AND ";
+					queryString += " and ";
 				}
-				queryString += excludedCondition;
+				queryString +=  "id not in (select id from InitlotterySixDataModel where " + excludedCondition + ")";
 			}
 		}
 		
@@ -161,7 +161,7 @@ public class LotteryService {
 			String currentNbr = src[currentNbrIndex];
 			String[] currentNbrs = currentNbr.split(",");
 			if (currentNbrIndex > 0) {
-				query += " AND ";
+				query += " OR ";
 			}
 			query += generateQueryForNbrs(currentNbrs, nbrCount);
 		}
@@ -192,13 +192,13 @@ public class LotteryService {
 					int intIndex = Integer.parseInt(currentIndexNbr);
 					intIndex --;
 					String currentIndexValue = nbrs[intIndex];
-					tempQuery += "N"+currentIndexNbr+" <> " +currentIndexValue;
+					tempQuery += "N"+currentIndexNbr+" = " +currentIndexValue;
 					if (k == indexNbrs.length - 1) {
 						tempQuery += ")";
 					}
 				}
 				if (j > 0) {
-					query += " AND ";
+					query += " OR ";
 				}
 				query += tempQuery;
 			}
