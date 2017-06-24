@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.sql.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class LotteryDAO {
 	
 	public List<InitlotterySixDataModel> getLotteryWithConditionString(String conditionString) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String queryBase = "from InitlotterySixDataModel";
+        String queryBase = "from InitlotterySixDataModel";
 		String fullQueryBaseString = queryBase;
 		if (conditionString.trim().length() > 0) {
 			fullQueryBaseString += " Where " + conditionString + " ORDER BY RAND()";
@@ -37,8 +38,39 @@ public class LotteryDAO {
 		System.out.println("queryString is " + fullQueryBaseString);	
 		Query query = session.createQuery(fullQueryBaseString);
 		query.setMaxResults(5);
-		List<InitlotterySixDataModel> countryList = query.list();
-		return generateRandomNumbers(5, countryList);
+		List<InitlotterySixDataModel> lotteryList = query.list();
+		return lotteryList;
+	}
+	
+	// has excluded的情况 
+	public List<InitlotterySixDataModel> getLotteryWithConditionString2(String conditionString) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryBase = "SELECT * FROM lottery.lotterysixbase a WHERE NOT exists ( SELECT 1 FROM lottery.lotterysixbase where id = a.id and ";
+		String fullQueryBaseString = queryBase + conditionString + ")";
+		if (fullQueryBaseString.trim().length() > 0) {
+			fullQueryBaseString += " ORDER BY RAND() limit 5";
+		}
+		if (conditionString.length() == 0) {
+			return this.generateRandomModels(5);
+		}
+		//+ " ORDER BY RAND() LIMIT 5"
+		System.out.println("queryString is " + fullQueryBaseString);	
+		Query query = session.createSQLQuery(fullQueryBaseString);
+		List<InitlotterySixDataModel> lotteryList = query.list();
+		return lotteryList;
+	}
+	
+	
+	public void truncateExcludedTable(String conditionString) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery(conditionString);
+		query.executeUpdate();
+	}
+
+	public void insertIntoExcludedTable(String conditionString) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery(conditionString);	
+		query.executeUpdate();
 	}
 	
 	List<InitlotterySixDataModel> generateRandomModels(int count) {

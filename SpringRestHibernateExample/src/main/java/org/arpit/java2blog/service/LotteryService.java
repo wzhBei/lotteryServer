@@ -3,10 +3,13 @@ package org.arpit.java2blog.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.commons.collections.functors.ForClosure;
 import org.arpit.java2blog.controller.InitlotterySixData;
@@ -139,26 +142,124 @@ public class LotteryService {
 			
 			int excludedCount = (int) map.get("excludedCount");
 			String excludedCondition = generateQueryWithExcludedNumbers(tempList2, excludedCount);
-			System.out.println(excludedCondition);
-			
-			if (excludedCondition.length() > 0) {
-				if(queryString.length() > 0) {
-					queryString += " and ";
-				}
-				queryString +=  "id not in (select id from InitlotterySixDataModel where " + excludedCondition + ")";
+			if (queryString.trim().length() > 0) {
+				queryString = excludedCondition + " AND " +  " ( " + queryString + " ) ";
 			}
+			
+			return lotteryDao.getLotteryWithConditionString2(queryString);
+			
+//			String truncateQuery = "truncate table lottery.excludeResult";
+//			lotteryDao.truncateExcludedTable(truncateQuery);
 		}
 		
 		return lotteryDao.getLotteryWithConditionString(queryString);
 	}
 	
-	//
+	// plan 3生成所有带空位的数组 eg. [0, 5, 0, 15, 0, 22]
+		// 0代表站位
+		List<String[]> occupiedWith(String[] jsonSource, int nbrCount) {
+			List<String[]> result = new ArrayList<String[]>();
+			
+			InitlotterySixData init = new InitlotterySixData();
+			List<String> gemdNumbers;
+			try {
+				gemdNumbers = init.GenCom("1,2,3,4,5,6", ",", nbrCount);
+				for (String currentStr : jsonSource) {
+					String[] currentSource = currentStr.split(",");
+					
+					for(int i = 0; i < gemdNumbers.size(); i++) {
+						// [1,4,5]
+						String indexStrings = gemdNumbers.get(i);
+						String indexNbrs[] =  indexStrings.split(",");
+						
+						String[] ocuppiedAry = {"", "", "", "", "", ""};
+						
+						int usedValueCount = 0;
+						//得到索引后， 生成占位数组
+						for(int j = 0; j < 6; j++) {
+							if (usedValueCount >= nbrCount) {
+								break;
+							}
+							String indexString = indexNbrs[usedValueCount];
+							int indexInt = Integer.parseInt(indexString);
+							String valueStr = currentSource[usedValueCount];
+							if (j == indexInt - 1) {
+								ocuppiedAry[j] =  valueStr;
+								usedValueCount ++;
+							}
+						}
+						result.add(ocuppiedAry);
+					}
+				}
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return result;
+		}
+		
+//	plan3生成不符合exclude条件的所有数据
+	public void generateExcludedData(List<String[]> excludeArrays, int count) {
+        // 初始化
+		StringBuffer buff = new StringBuffer();
+		for (int i = 1; i < 44; i++) {
+			if (i > 1) {
+				buff.append(",");
+			}
+			String s = String.valueOf(i);
+			buff.append(s);
+        }
+		
+        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> filtedIDs = new ArrayList<String>();
+        long start = new Date().getTime();
+
+        InitlotterySixData init = new InitlotterySixData();
+        try {
+			result = init.GenCom(buff.toString(), ",", 6);
+			System.out.println(result.size());
+			
+			for (int i = 0; i < result.size(); i++) {
+				String originString = result.get(i);
+				String[] nbrAry = originString.split(",");
+				
+				// 当前数字是否符合
+				boolean isOk = false;
+				for(String[] excludedAry : excludeArrays) {
+					if (isOk) {
+						continue;
+					}
+					int tempCount = 0;
+					for (int j = 0; j < excludedAry.length; j++) {
+						if( nbrAry[j] == excludedAry[j]) {
+							count ++;
+						} 
+						if (tempCount >= count) {
+							System.out.println("Current str is : " + originString);
+							filtedIDs.add(originString);
+							isOk = true;
+							break;
+						}
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+        long end = new Date().getTime() - start;
+        System.out.printf("-------Generat Excluded IDs-Total Seconds Is : %d-------, count is %d", end, filtedIDs.size());
+	}
+	
+	//plan1
 	String generateQueryWithExcludedNumbers(String[] src, int nbrCount) {
 		String query = "";
-		
-		// 获得当前一组数字
 		for(int currentNbrIndex = 0; currentNbrIndex < src.length; currentNbrIndex++) {
+			// 获得当前一组数字
 			String currentNbr = src[currentNbrIndex];
+			
 			String[] currentNbrs = currentNbr.split(",");
 			if (currentNbrIndex > 0) {
 				query += " OR ";
@@ -166,6 +267,61 @@ public class LotteryService {
 			query += generateQueryForNbrs(currentNbrs, nbrCount);
 		}
 		return "(" + query + ")";
+	}
+	
+	
+	// plan 2
+	void gMsWithExNbrs(String[] src, int nbrCount) {
+		for(int currentNbrIndex = 0; currentNbrIndex < src.length; currentNbrIndex++) {
+			// 获得当前一组数字
+			String currentNbr = src[currentNbrIndex];
+			// 当前number数组
+			String[] currentNbrs = currentNbr.split(",");
+			
+			
+//			query += generateQueryForNbrs(currentNbrs, nbrCount);
+		}
+	}
+	
+	// 根据所有站位数组创建出所有的models
+	void modelsWithPerNbrs(String[] currentNbrs) {
+		// 所有站位数组
+		List<int[]> result = new ArrayList<int[]>();
+		for(int[] ary : result) {
+			
+			
+		}
+		
+		
+	}
+	
+	// 根据一个站位数组生成出所有情况的id
+	List<int[]>geAllResultWithOccypiedAry(int[] occupiedAry) {
+		List<int[]> result = new ArrayList<int[]>();
+		for(int i = 0; i < occupiedAry.length; i ++) {
+			// 一个空位的情况
+			if (condition) {
+				
+			}
+			// 两个空位以上相邻的情况
+			
+		}
+		return result;
+		
+	} 
+
+	
+	
+	
+	
+	// 业务无关 string[] to int[]
+	int[] intListFrom(String[] strlist) {
+		int[] rs = new int[strlist.length];
+		for(int i = 0; i < strlist.length; i++) {
+			String str = strlist[i];
+			rs[i] = Integer.parseInt(str);
+		}
+		return rs;
 	}
 	
 	// nbr "1,5,11,15,19,30"
